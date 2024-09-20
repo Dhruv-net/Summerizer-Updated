@@ -1,7 +1,7 @@
 from setuptools import find_packages
 import setuptools 
 
-import os
+import re
 
 # Read the contents of your README file
 def read_readme():
@@ -12,24 +12,28 @@ def read_readme():
         print("Warning: README.md not found.")
         return ''
 
-# Read the requirements from the requirements.txt file
 def read_requirements():
     req_file = 'requirements.txt'
     try:
-        with open(req_file, 'r') as f:
-            return f.read().splitlines()
+        with open(req_file, 'r', encoding='utf-8-sig') as f:
+            requirements = f.read().splitlines()
     except UnicodeDecodeError:
-        # If UTF-8 decoding fails, try with 'utf-8-sig' for BOM-encoded files
-        try:
-            with open(req_file, 'r', encoding='utf-8-sig') as f:
-                return f.read().splitlines()
-        except UnicodeDecodeError:
-            # If that fails too, try with 'latin1'
-            with open(req_file, 'r', encoding='latin1') as f:
-                return f.read().splitlines()
+        with open(req_file, 'r', encoding='latin1') as f:
+            requirements = f.read().splitlines()
     except FileNotFoundError:
         print(f"Warning: {req_file} not found. Proceeding without specified requirements.")
         return []
+
+    # Clean up requirements
+    cleaned_requirements = []
+    for req in requirements:
+        # Remove any leading/trailing whitespace and BOM
+        req = req.strip().lstrip('\ufeff')
+        # Only add non-empty lines that start with a letter or number
+        if req and re.match(r'^[a-zA-Z0-9]', req):
+            cleaned_requirements.append(req)
+    
+    return cleaned_requirements
 
 setuptools.setup(
     name='Summarizer',
@@ -39,7 +43,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     author='Dhruv Soni (Dhruv-net)',
     author_email='soni0682@gmail.com',
-    url='https://github.com/yourusername/Summarizer',  # Replace with your actual repo URL
+    url='https://github.com/Dhruv-net/Summerizer-Updated',  
     packages=find_packages(exclude=['tests*']),
     install_requires=read_requirements(),
     classifiers=[
