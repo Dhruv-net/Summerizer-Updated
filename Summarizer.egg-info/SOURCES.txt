@@ -1,4 +1,7 @@
+LICENSE
+MANIFEST.in
 README.md
+pyproject.toml
 setup.py
 Summarizer.egg-info/PKG-INFO
 Summarizer.egg-info/SOURCES.txt
